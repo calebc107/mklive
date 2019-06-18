@@ -1,6 +1,11 @@
 #!/bin/bash
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
 path=$1
-read -p "Path is $path. Press enter if this is correct and script is running as root from tty2." continue
+read -p "Path is $path. Press enter if this is correct and script is running from tty2." continue
 
 dhclient
 mv /usr/sbin/update-initramfs.* /usr/sbin/update-initramfs

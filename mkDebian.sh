@@ -1,5 +1,8 @@
 #!/bin/bash
-read -p "only run as sudo! press enter to continue"
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
 apt install debootstrap squashfs-tools
 rm -r live
 mkdir live
@@ -26,5 +29,4 @@ umount ./live/sys
 mksquashfs ./live/ filesystem.squashfs -noappend
 cp ./live/boot/vmlinuz* ./vmlinuz
 cp ./live/boot/initrd* ./initrd.img
-chmod 755 ./vmlinuz ./initrd.img filesystem.squashfs
-chown caleb:caleb ./vmlinuz ./initrd.img filesystem.squashfs
+chmod 777 ./vmlinuz ./initrd.img filesystem.squashfs

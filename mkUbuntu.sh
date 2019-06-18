@@ -1,5 +1,8 @@
 #!/bin/bash
-read -p "only run as sudo! press enter to continue"
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
 apt install debootstrap squashfs-tools 
 rm -r live
 mkdir live
