@@ -6,18 +6,19 @@ fi
 apt install debootstrap squashfs-tools
 rm -r live
 mkdir live
-debootstrap stretch ./live/
+debootstrap buster ./live/
 echo "#!/bin/bash
-echo \"deb http://deb.debian.org/debian stretch main contrib non-free\" > /etc/apt/sources.list
+echo \"deb http://deb.debian.org/debian buster main contrib non-free\" > /etc/apt/sources.list
 apt update
 apt dist-upgrade
-apt install gnome-core chromium live-boot linux-image-amd64 sudo locales-all bash-completion nvidia-driver
+apt install gnome-core chromium live-boot linux-image-amd64 sudo locales-all bash-completion
 apt autoremove
 apt autoclean
 
 read -p \"Type username: \" user
 adduser \$user
-adduser \$user sudo" > ./live/chrootDebian.sh
+adduser \$user sudo
+update-initramfs -u" > ./live/chrootDebian.sh
 chmod +x ./live/chrootDebian.sh
 mount --bind /dev ./live/dev
 mount --bind /proc ./live/proc
