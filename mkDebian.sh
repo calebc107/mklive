@@ -11,23 +11,26 @@ echo "#!/bin/bash
 echo \"deb http://deb.debian.org/debian buster main contrib non-free\" > /etc/apt/sources.list
 apt update
 apt dist-upgrade
-apt install gnome-core chromium live-boot linux-image-amd64 sudo locales-all bash-completion
-apt autoremove
-apt autoclean
-
-read -p \"Type username: \" user
-adduser \$user
-adduser \$user sudo
-update-initramfs -u" > ./live/chrootDebian.sh
-chmod +x ./live/chrootDebian.sh
+apt install live-boot linux-image-amd64 sudo locales-all firmware-misc-nonfree
+dpkg-reconfigure locales-all
+update-initramfs.orig.initramfs-tools -ck \$(ls /lib/modules | head -n 1)
+passwd -d root" > ./live/chroot.sh
+chmod +x ./live/chroot.sh
 mount --bind /dev ./live/dev
 mount --bind /proc ./live/proc
 mount --bind /sys ./live/sys
-chroot ./live/ /chrootDebian.sh
+chroot ./live/ /chroot.sh
 umount ./live/dev
 umount ./live/proc
 umount ./live/sys
-mksquashfs ./live/ filesystem.squashfs -noappend
+mksquashfs ./live/ filesystem.squashfs -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
 cp ./live/boot/vmlinuz* ./vmlinuz
 cp ./live/boot/initrd* ./initrd.img
 chmod 777 ./vmlinuz ./initrd.img filesystem.squashfs
+chown caleb:caleb ./vmlinuz ./initrd.img filesystem.squashfs
+echo "Live system initialized.
+NEXT STEPS:
+	Copy new files to removable media
+	Boot into new system
+	Login with username root on tty2
+	Execute \"/update.sh {path-to-live-medium}\""
