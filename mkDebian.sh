@@ -13,8 +13,10 @@ apt update
 apt dist-upgrade
 apt install live-boot linux-image-amd64 sudo locales-all firmware-misc-nonfree
 dpkg-reconfigure locales-all
-update-initramfs.orig.initramfs-tools -ck \$(ls /lib/modules | head -n 1)
+update-initramfs.orig.initramfs-tools -ck \$(ls /lib/modules | tail -n 1)
 passwd -d root" > ./live/chroot.sh
+cp updateDebian.sh ./live/update.sh
+chmod +x ./live/update.sh
 chmod +x ./live/chroot.sh
 mount --bind /dev ./live/dev
 mount --bind /proc ./live/proc
