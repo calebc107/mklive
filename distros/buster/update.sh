@@ -12,10 +12,7 @@ mv /usr/sbin/update-initramfs.* /usr/sbin/update-initramfs
 
 apt update
 apt dist-upgrade
-
-apt install gnome-core chromium nano bash-completion ecryptfs-utils
-apt remove firefox
-
+apt install gnome-core chromium nano bash-completion git htop squashfs-tools
 apt autoremove
 apt autoclean
 
@@ -41,13 +38,13 @@ umount /lib/live/mount/medium
 "> /bin/live-toram
 
 read -p "Type username: " user
-adduser --encrypt-home $user
+adduser $user
 adduser $user sudo
 
 read -p "User created. Log in (on another terminal) to new user and make any changes and customizations, then LOG OUT, return to this terminal session and press enter." continue
 
 pkill -9 -u $user
-umount.ecryptfs -l /home/$user
+umount -l /home/$user
 rm -r /var/log/journal/*
 rm -r /var/apt/lists/*
 apt clean
