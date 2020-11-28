@@ -17,7 +17,7 @@ deb http://deb.debian.org/debian buster-backports main contrib non-free
 " > /etc/apt/sources.list
 apt update
 apt dist-upgrade
-apt install gnome-core chromium nano bash-completion git htop squashfs-tools
+apt install gnome-core chromium nano bash-completion git htop squashfs-tools code net-tools 
 apt autoremove
 apt autoclean
 
