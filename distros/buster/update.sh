@@ -18,6 +18,7 @@ deb http://deb.debian.org/debian buster-backports main contrib non-free
 apt update
 apt dist-upgrade
 apt install gnome-core chromium nano bash-completion git htop squashfs-tools code net-tools 
+apt install -t buster-backports nvidia-driver
 apt autoremove
 apt autoclean
 
