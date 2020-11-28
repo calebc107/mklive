@@ -56,7 +56,7 @@ passwd -l root
 
 
 shopt -s dotglob
-mksquashfs / $path/newfilesystem.squashfs -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
+mksquashfs / $path/newfilesystem.squashfs -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'usr/lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
 #cp /boot/initrd.img* $path/newinitrd.img
 cp `ls /boot/initrd* | tail -n 1` $path/newinitrd.img
 #cp /boot/vmlinuz* $path/newvmlinuz
