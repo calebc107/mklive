@@ -10,6 +10,11 @@ read -p "Path is $path. Press enter if this is correct and script is running fro
 dhclient
 mv /usr/sbin/update-initramfs.* /usr/sbin/update-initramfs
 
+echo "deb http://deb.debian.org/debian/ buster main contrib non-free
+deb http://deb.debian.org/debian/ buster-updates main contrib non-free
+deb http://security.debian.org/ buster/updates main contrib non-free
+deb http://deb.debian.org/debian buster-backports main contrib non-free
+" > /etc/apt/sources.list
 apt update
 apt dist-upgrade
 apt install gnome-core chromium nano bash-completion git htop squashfs-tools
