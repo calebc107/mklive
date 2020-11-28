@@ -1,0 +1,4 @@
+filesystem.squashfs
+initrd.img
+vmlinuz
+live/
