@@ -1,5 +1,6 @@
 #!/bin/bash
-echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list
+echo "#deb http://deb.debian.org/debian buster main contrib non-free
+deb http://deb.debian.org/debian buster-backports main contrib non-free" > /etc/apt/sources.list
 apt update
 apt install live-boot linux-image-amd64 sudo locales-all firmware-misc-nonfree
 dpkg-reconfigure locales-all
