@@ -1,36 +1,34 @@
 #!/bin/bash
 read -p "Press Enter if script is running as ROOT"
 apt install debootstrap squashfs-tools
+rm -r live
 mkdir live
-tmp=$PWD/live #$(sudo mktemp -d)
+tmp=$PWD/live
 
-read -p "skip bootstrapping and package installation? [Y/n]" -n 1 yn
-case $yn in 
-  [Nn]* )
-	echo "Erasing live"
-	rm -r $tmp/*
-	debootstrap bionic $tmp
-	cp /etc/apt/sources.list $tmp/etc/apt/sources.list
+debootstrap buster $tmp
+cat << END > $tmp/etc/apt/sources.list
+deb http://deb.debian.org/debian/ buster main contrib non-free
+deb http://deb.debian.org/debian/ buster-updates main contrib non-free
+deb http://deb.debian.org/debian buster-backports main contrib non-free
+deb http://security.debian.org/ buster/updates main contrib non-free
+END
+#run in chroot
+cat << END > $tmp/chroot.sh
+#!/bin/bash
+apt update
+apt install qemu-kvm xterm xorg live-boot nano bash-completion alsa-utils pulseaudio
+apt install -t buster-backports linux-image-amd64 firmware-misc-nonfree firmware-iwlwifi network-manager
 
-	#run in chroot
-	echo "
-	#!/bin/bash
-	apt update
-	apt install qemu-kvm xterm xorg linux-image-generic live-boot nano bash-completion alsa-base pulseaudio network-manager
-	passwd -d root
-	systemctl disable hwclock.sh
-	">$tmp/chroot.sh
-	chmod +x $tmp/chroot.sh
-	chroot $tmp /chroot.sh
-	;;
-  [Yy]* ) ;;
-esac
+passwd -d root
+systemctl disable hwclock.sh
+END
+chmod +x $tmp/chroot.sh
+chroot $tmp /chroot.sh
 
 #script for service
-echo "
+cat << END > $tmp/VMHost.sh
 #!/bin/bash
 mount -o remount,rw  /lib/live/mount/medium
-dhclient
 cd /lib/live/mount/medium/VMs
 for x in \$(cat /proc/cmdline); do
   case \$x in
@@ -40,21 +38,13 @@ for x in \$(cat /proc/cmdline); do
         ;;
   esac
 done
-"> $tmp/VMHost.sh
+END
 chmod +x $tmp/VMHost.sh
 
 #assume local time
 echo "0.0 0 0.0
 0
 LOCAL">$tmp/etc/adjtime
-
-#auto network config
-echo "network:
-  version: 2
-  renderer: NetworkManager" > $tmp/etc/netplan/netman.yaml 
-
-#no kernel messsages because my laptop wont shut up
-echo "kernel.printk = 3 4 1 3" > $tmp/etc/sysctl.conf 
 
 #run it at startup
 if ! grep VMHost.sh $tmp/etc/crontab ; then
