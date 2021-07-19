@@ -17,8 +17,8 @@ deb http://security.debian.org/ buster/updates main contrib non-free
 " > /etc/apt/sources.list
 apt update
 apt dist-upgrade
-apt install gnome-core chromium nano bash-completion git htop squashfs-tools net-tools curl wget code
-apt install -t buster-backports nvidia-driver firmware-iwlwifi
+apt install lshw iperf avahi-daemon gnome-core chromium nano bash-completion git htop squashfs-tools net-tools curl wget
+apt install -t buster-backports nvidia-driver firmware-iwlwifi firmware-amd-graphics
 apt autoremove
 apt autoclean
 
