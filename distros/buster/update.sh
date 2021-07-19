@@ -7,7 +7,6 @@ fi
 path=$1
 read -p "Path is $path. Press enter if this is correct and script is running from tty2." continue
 
-dhclient
 mv /usr/sbin/update-initramfs.* /usr/sbin/update-initramfs
 
 echo "
