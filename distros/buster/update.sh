@@ -27,11 +27,11 @@ timedatectl set-local-rtc 1
 timedatectl set-ntp 1
 mount -o remount,rw /lib/live/mount/medium
 
-#allow user to go to ram if needed
-echo "#!/bin/bash
+#allow user to switch to ramdisk if needed
+cat << END > /bin/live-toram
+#!/bin/bash
 echo \"Copying filesystem to memory.\"
 rsync -a --progress $path/filesystem.squashfs /tmp/live
-
 LANGUAGE=C LANG=C LC_ALL=C perl << EOF
 open LOOP, '</dev/loop0' or die \$!;
 open DEST, '</tmp/live' or die \$!;
@@ -39,9 +39,8 @@ ioctl(LOOP, 0x4C06, fileno(DEST)) or die \$!
 close LOOP;
 close DEST;
 EOF
-
 umount /lib/live/mount/medium
-"> /bin/live-toram
+END
 
 read -p "Type username: " user
 adduser $user
@@ -78,7 +77,6 @@ apt clean
 
 passwd -l root
 
-
 shopt -s dotglob
 mksquashfs / $path/newfilesystem.squashfs -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'usr/lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
 #cp /boot/initrd.img* $path/newinitrd.img
@@ -86,10 +84,10 @@ cp `ls /boot/initrd* | tail -n 1` $path/newinitrd.img
 #cp /boot/vmlinuz* $path/newvmlinuz
 cp `ls /boot/vmlinuz* | tail -n 1` $path/newvmlinuz
 
-read -p "Press enter to commit changes" continue
+read -p "Press enter to commit changes and reboot" continue
 mv $path/newfilesystem.squashfs $path/filesystem.squashfs
 mv $path/newinitrd.img $path/initrd.img
 mv $path/newvmlinuz $path/vmlinuz
 umount -l /
-read -p "Unmounted all filesystems including root. Press enter to force reboot" continue
+echo "Unmounted all filesystems, including root. Rebooting..."
 reboot -f
