@@ -47,7 +47,28 @@ read -p "Type username: " user
 adduser $user
 adduser $user sudo
 
-read -p "User created. Log in (on another terminal) to new user and make any changes and customizations, then LOG OUT, return to this terminal session and press enter." continue
+#set various gnome settings
+sudo -u $user dbus-launch dconf load /org/gnome/ << END
+[settings-daemon/plugins/media-keys]
+custom-keybindings=['/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']
+[settings-daemon/plugins/media-keys/custom-keybindings/custom0]
+binding='<Primary><Alt>t'
+command='gnome-terminal'
+name='Terminal'
+[settings-daemon/peripherals/keyboard]
+numlock-state='on'
+[shell]
+favorite-apps=['chromium.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.DiskUtility.desktop', 'org.gnome.Terminal.desktop']
+[nautilus/preferences]
+default-folder-viewer='icon-view'
+[nautilus/icon-view]
+default-zoom-level='standard'
+[desktop/interface]
+clock-show-seconds=true
+gtk-theme='Adwaita-dark'
+[desktop/peripherals/touchpad]
+tap-to-click=true
+END
 
 pkill -9 -u $user
 umount -l /home/$user
