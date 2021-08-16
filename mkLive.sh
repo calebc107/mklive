@@ -5,9 +5,11 @@ if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
 fi
-apt install debootstrap squashfs-tools 
-rm -r live
-mkdir live
+apt install debootstrap squashfs-tools
+umount ./live/dev || true
+umount ./live/proc || true
+umount ./live/sys || true
+rm -r live || true
 debootstrap $distro ./live/
 
 cp ./distros/$distro/chroot.sh ./live/chroot.sh
