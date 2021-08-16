@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 distro=$1
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
