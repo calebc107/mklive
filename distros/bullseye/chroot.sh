@@ -21,6 +21,9 @@ cat << END > /etc/hosts
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 END
+cat << END > /etc/sudoers.d/privacy 
+Defaults        lecture = never #Dont nag me
+END
 dpkg-reconfigure locales-all
 update-initramfs.orig.initramfs-tools -ck $(ls /lib/modules | tail -n 1)
 passwd -d root
