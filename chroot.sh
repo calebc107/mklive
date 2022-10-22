@@ -7,10 +7,9 @@ deb-src http://deb.debian.org/debian bullseye-backports main contrib non-free
 " > /etc/apt/sources.list
 apt update
 #TODO: re-instate backports as soon as packages are available for it
-#apt install -t bullseye-backports linux-image-amd64 network-manager firmware-iwlwifi firmware-brcm80211 firmware-atheros firmware-ralink firmware-realtek
-apt install linux-image-amd64 network-manager firmware-iwlwifi firmware-brcm80211 firmware-atheros firmware-ralink firmware-realtek
-apt install linux-image-amd64 network-manager firmware-iwlwifi firmware-brcm80211 firmware-atheros firmware-ralink firmware-realtek
-apt install live-boot sudo locales-all
+apt install -t bullseye-backports linux-image-amd64 network-manager firmware-iwlwifi firmware-brcm80211 firmware-atheros firmware-ralink firmware-realtek
+# apt install linux-image-amd64 network-manager firmware-iwlwifi firmware-brcm80211 firmware-atheros firmware-ralink firmware-realtek
+apt install live-boot sudo locales
 read -p "Set new hostname: " newhostname
 echo $newhostname > /etc/hostname
 cat /etc/hostname
@@ -24,6 +23,5 @@ END
 cat << END > /etc/sudoers.d/privacy 
 Defaults        lecture = never #Dont nag me
 END
-dpkg-reconfigure locales-all
 update-initramfs.orig.initramfs-tools -ck $(ls /lib/modules | tail -n 1)
 passwd -d root
