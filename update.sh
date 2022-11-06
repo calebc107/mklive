@@ -18,6 +18,10 @@ echo "is chroot=$IS_CHROOT"
 echo "path=$path"
 sleep 2
 
+if [ -e /usr/sbin/update-initramfs.orig.initramfs-tools ]; then
+  ln -sf /usr/sbin/update-initramfs.orig.initramfs-tools /usr/sbin/update-initramfs
+fi
+
 echo "
 deb http://deb.debian.org/debian bullseye main contrib non-free
 deb http://deb.debian.org/debian bullseye-backports main contrib non-free
