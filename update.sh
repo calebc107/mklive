@@ -53,6 +53,8 @@ if [ -e /usr/sbin/update-initramfs.orig.initramfs-tools ]; then
   ln -sf /usr/sbin/update-initramfs.orig.initramfs-tools /usr/sbin/update-initramfs
 fi
 
+update-initramfs -ck $(ls -v /lib/modules | tail -n 1)
+
 #allow user to switch to ramdisk if needed
 cat << END > /bin/live-toram
 #!/bin/bash
