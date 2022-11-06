@@ -29,12 +29,23 @@ deb http://deb.debian.org/debian/ bullseye-updates main contrib non-free
 deb http://security.debian.org/ bullseye-security main contrib non-free
 " > /etc/apt/sources.list
 apt update
-apt dist-upgrade
-apt install gparted lshw iperf3 avahi-daemon gnome-core chromium nano bash-completion git htop squashfs-tools net-tools curl wget
-#TODO: re-instate backports as soon as packages are available for it
-apt install nvidia-driver firmware-amd-graphics firmware-linux-* firmware-misc-nonfree
-#apt install -t bullseye-backports nvidia-driver firmware-amd-graphics firmware-linux-* firmware-misc-nonfree
-apt install nvidia-driver firmware-amd-graphics firmware-linux-* firmware-misc-nonfree
+apt -y dist-upgrade
+apt install -y linux-image-amd64 network-manager locales
+
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+locale-gen
+
+apt install -y firmware-ath9k-htc firmware-atheros firmware-b43-installer firmware-b43-installer \
+  firmware-bnx2 firmware-brcm80211 firmware-cavium firmware-intelwimax firmware-ipw2x00 \
+  firmware-iwlwifi firmware-libertas firmware-linux* firmware-misc-nonfree \
+  firmware-myricom firmware-netronome firmware-ralink firmware-realtek \
+  firmware-ti-connectivity firmware-zd1211
+
+apt install -y gparted lshw iperf3 avahi-daemon \
+    gnome-core nano bash-completion git htop squashfs-tools net-tools curl wget \
+    live-boot sudo systemd-timesyncd alsa-utils pulseaudio grub2 grub-pc \
+    grub-efi-amd64-signed testdisk iotop
+
 apt autoremove
 apt autoclean
 
