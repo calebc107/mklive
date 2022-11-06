@@ -9,8 +9,8 @@ if [[ $DEV = *[0-9] ]];PART="${PART}p";fi
 PART="${PART}1"
 read -p "Installing to $DEV. Press enter to continue."
 apt install grub-efi-amd64-signed grub-pc
-mkdir mnt
-mount ${DEV}1 mnt
+mkdir -p mnt
+mount $PART ./mnt
 grub-install --boot-directory ./mnt/boot --target i386-pc $DEV
 grub-install --removable --boot-directory ./mnt/boot --target x86_64-efi --uefi-secure-boot --disable-shim-lock --efi-directory ./mnt --no-nvram $DEV 
 cp memtestx*.bin shellx64.efi mnt/EFI/boot
