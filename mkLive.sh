@@ -5,7 +5,7 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 apt install debootstrap squashfs-tools
-umount ./live/dev || true
+umount ./live/dev -l || true #unsure why -l works
 umount ./live/proc || true
 umount ./live/sys || true
 umount ./live/mnt || true
@@ -26,8 +26,7 @@ chmod +x ./live/update.sh
 mount --bind /dev ./live/dev
 mount --bind /proc ./live/proc
 mount --bind /sys ./live/sys
-chroot ./live/ /chroot.sh
-umount ./live/dev
+umount -l ./live/dev
 umount ./live/proc
 umount ./live/sys
 mksquashfs ./live/ filesystem.squashfs -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
