@@ -26,17 +26,14 @@ chmod +x ./live/update.sh
 mount --bind /dev ./live/dev
 mount --bind /proc ./live/proc
 mount --bind /sys ./live/sys
+mount --bind ./output ./live/mnt
+chroot ./live/ /update.sh
 umount -l ./live/dev
 umount ./live/proc
 umount ./live/sys
-mksquashfs ./live/ filesystem.squashfs -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
-cp ./live/boot/vmlinuz* ./vmlinuz
-cp ./live/boot/initrd* ./initrd.img
-chmod 755 ./vmlinuz ./initrd.img filesystem.squashfs
+umount ./live/mnt
+chmod 755 ./output/*
 echo "
 Live system initialized.
 NEXT STEPS:
-	Copy new files to removable media
-	Boot into new system
-	Login with username root on tty2
-	Execute \"/update.sh {path-to-live-medium}\""
+	Copy new files from output/ to removable media and ensure threre is a grub config for it"
