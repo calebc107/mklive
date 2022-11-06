@@ -49,10 +49,9 @@ apt install -y gparted lshw iperf3 avahi-daemon \
 apt autoremove
 apt autoclean
 
-timedatectl set-timezone America/New_York
-timedatectl set-local-rtc 1
-timedatectl set-ntp 1
-mount -o remount,rw /lib/live/mount/medium
+if [ -e /usr/sbin/update-initramfs.orig.initramfs-tools ]; then
+  ln -sf /usr/sbin/update-initramfs.orig.initramfs-tools /usr/sbin/update-initramfs
+fi
 
 #allow user to switch to ramdisk if needed
 cat << END > /bin/live-toram
