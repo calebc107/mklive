@@ -8,12 +8,20 @@ apt install debootstrap squashfs-tools
 umount ./live/dev || true
 umount ./live/proc || true
 umount ./live/sys || true
-rm -r live || true
-debootstrap $distro ./live/
+umount ./live/mnt || true
+mkdir -p output
+if [ ! -d ./live ]; then
+debootstrap bullseye ./live/
+read -p "Set new hostname: " newhostname
+echo $newhostname > ./live/etc/hostname
+cat ./live/etc/hostname
+cat << END > ./live/etc/hosts
+127.0.0.1	localhost
+127.0.1.1	$newhostname
+END
+fi
 
-cp ./distros/$distro/chroot.sh ./live/chroot.sh
-cp ./distros/$distro/update.sh ./live/update.sh
-chmod +x ./live/chroot.sh
+cp update.sh ./live/
 chmod +x ./live/update.sh
 mount --bind /dev ./live/dev
 mount --bind /proc ./live/proc
