@@ -120,11 +120,7 @@ find {/usr/share/locale/,/usr/share/help/} -mindepth 1 -maxdepth 1 -not -name "e
 $IS_CHROOT || mount -o remount,rw $(df $path | tail -n 1 | tr -s ' ' | cut -d ' ' -f 6);
 $IS_CHROOT || mount -f -o remount,ro /
 shopt -s dotglob
-mksquashfs / $path/newfilesystem.squashfs -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'usr/lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
-#cp /boot/initrd.img* $path/newinitrd.img
-cp `ls /boot/initrd* | tail -n 1` $path/newinitrd.img
-#cp /boot/vmlinuz* $path/newvmlinuz
-cp `ls /boot/vmlinuz* | tail -n 1` $path/newvmlinuz
+mksquashfs / $path/newfilesystem.squashfs -comp xz -Xbcj x86 -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'usr/lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
 
 read -p "Press enter to commit changes and reboot" continue
 mv $path/newfilesystem.squashfs $path/filesystem.squashfs
