@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
-distro=$1
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
+if [ "$EUID" -ne 0 ]; then
+  sudo $0 $@
   exit
 fi
 apt install debootstrap squashfs-tools
