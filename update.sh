@@ -5,10 +5,18 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
-path=$1
-read -p "Path is $path. Press enter if this is correct and script is running from tty2." continue
+if [ "$(mount | grep ' / ')" = "" ]
+then 
+  IS_CHROOT=true
+  path=/mnt
+else
+  IS_CHROOT=false
+  path=$(dirname $(losetup | grep /dev/loop0 | tr -s ' ' | cut -d ' ' -f 6));
+fi
 
-mv /usr/sbin/update-initramfs.* /usr/sbin/update-initramfs || true
+echo "is chroot=$IS_CHROOT"
+echo "path=$path"
+sleep 2
 
 echo "
 deb http://deb.debian.org/debian bullseye main contrib non-free
