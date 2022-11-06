@@ -117,8 +117,8 @@ umount -l /home/$user || true
 rm -rf /var/log/journal/* /usr/share/doc # remove some bloat
 find {/usr/share/locale/,/usr/share/help/} -mindepth 1 -maxdepth 1 -not -name "en" -exec rm -r {} \; #remove all locales but en
 
-passwd -l root
-
+$IS_CHROOT || mount -o remount,rw $(df $path | tail -n 1 | tr -s ' ' | cut -d ' ' -f 6);
+$IS_CHROOT || mount -f -o remount,ro /
 shopt -s dotglob
 mksquashfs / $path/newfilesystem.squashfs -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'usr/lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
 #cp /boot/initrd.img* $path/newinitrd.img
@@ -130,6 +130,5 @@ read -p "Press enter to commit changes and reboot" continue
 mv $path/newfilesystem.squashfs $path/filesystem.squashfs
 mv $path/newinitrd.img $path/initrd.img
 mv $path/newvmlinuz $path/vmlinuz
-umount -l /
-echo "Unmounted all filesystems, including root. Rebooting..."
-reboot -f
+$IS_CHROOT || (echo "unmounting root..."; umount -l /)
+$IS_CHROOT || (read -p "Press enter to reboot"; reboot -f)
