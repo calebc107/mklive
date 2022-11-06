@@ -109,7 +109,9 @@ gtk-theme='Adwaita-dark'
 tap-to-click=true
 END
 
-pkill -9 -u $user
+cat << END > /etc/sudoers.d/privacy 
+Defaults        lecture = never #Dont nag me
+END
 umount -l /home/$user || true
 rm -r /var/log/journal/* || true
 rm -r /var/apt/lists/* || true
