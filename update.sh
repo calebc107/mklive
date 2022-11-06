@@ -112,10 +112,10 @@ END
 cat << END > /etc/sudoers.d/privacy 
 Defaults        lecture = never #Dont nag me
 END
+
 umount -l /home/$user || true
-rm -r /var/log/journal/* || true
-rm -r /var/apt/lists/* || true
-apt clean
+rm -rf /var/log/journal/* /usr/share/doc # remove some bloat
+find {/usr/share/locale/,/usr/share/help/} -mindepth 1 -maxdepth 1 -not -name "en" -exec rm -r {} \; #remove all locales but en
 
 passwd -l root
 
