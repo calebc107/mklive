@@ -4,8 +4,10 @@ if [ $(id -u) -ne 0 ]; then
 fi
 cd $(dirname $0)
 DEV=$1
-echo "Installing to $DEV. Press enter to continue."
-read
+PART=$DEV
+if [[ $DEV = *[0-9] ]];PART="${PART}p";fi
+PART="${PART}1"
+read -p "Installing to $DEV. Press enter to continue."
 apt install grub-efi-amd64-signed grub-pc
 mkdir mnt
 mount ${DEV}1 mnt
