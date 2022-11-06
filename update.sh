@@ -28,6 +28,7 @@ deb http://deb.debian.org/debian bullseye-backports main contrib non-free
 deb http://deb.debian.org/debian/ bullseye-updates main contrib non-free
 deb http://security.debian.org/ bullseye-security main contrib non-free
 " > /etc/apt/sources.list
+
 apt update
 apt -y dist-upgrade
 apt install -y linux-image-amd64 network-manager locales
@@ -124,7 +125,7 @@ mksquashfs / $path/newfilesystem.squashfs -comp xz -Xbcj x86 -noappend -wildcard
 cp `ls -v /boot/initrd* | tail -n 1` $path/newinitrd.img
 cp `ls -v /boot/vmlinuz* | tail -n 1` $path/newvmlinuz
 
-read -p "Press enter to commit changes and reboot" continue
+read -p "Press enter to commit changes"
 mv $path/newfilesystem.squashfs $path/filesystem.squashfs
 mv $path/newinitrd.img $path/initrd.img
 mv $path/newvmlinuz $path/vmlinuz
