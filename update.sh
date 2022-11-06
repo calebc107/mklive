@@ -97,7 +97,7 @@ binding='<Primary><Alt>t'
 command='gnome-terminal'
 name='terminal'
 [shell]
-favorite-apps=['chromium.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.DiskUtility.desktop', 'org.gnome.Terminal.desktop']
+favorite-apps=['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.DiskUtility.desktop', 'org.gnome.Terminal.desktop']
 [nautilus/preferences]
 default-folder-viewer='icon-view'
 [nautilus/icon-view]
