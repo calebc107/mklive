@@ -55,6 +55,10 @@ fi
 
 update-initramfs -ck $(ls -v /lib/modules | tail -n 1)
 
+ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+hwclock -s --localtime
+systemctl enable systemd-timesyncd
+
 #allow user to switch to ramdisk if needed
 cat << END > /bin/live-toram
 #!/bin/bash
