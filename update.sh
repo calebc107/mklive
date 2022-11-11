@@ -64,15 +64,15 @@ systemctl enable systemd-timesyncd
 cat << END > /bin/live-toram
 #!/bin/bash
 path=\$(losetup | grep /dev/loop0 | tr -s ' ' | cut -d ' ' -f 6)
-echo  will unmount \$path
-echo \"Copying filesystem to memory.\"
+echo Copying \$path to memory.
 rsync -a --progress \$path /tmp/live
-LANGUAGE=C LANG=C LC_ALL=C perl << EOF
-open LOOP, '</dev/loop0' or die \$!;
-open DEST, '</tmp/live' or die \$!;
-ioctl(LOOP, 0x4C06, fileno(DEST)) or die \$!
-close LOOP;
-close DEST;
+python3 << EOF
+import fcntl
+loop = open('/dev/loop0')
+dest = open('/tmp/live')
+fcntl.ioctl(loop,0x4C06,dest.fileno())
+loop.close()
+dest.close()
 EOF
 umount \$(df \$path | tail -n 1 | tr -s ' ' | cut -d ' ' -f 6)
 END
