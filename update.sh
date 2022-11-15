@@ -97,6 +97,9 @@ adduser $user sudo
 
 #set various gnome settings
 sudo -u $user dbus-launch dconf load /org/gnome/ << END
+[settings-daemon/plugins/power]
+sleep-inactive-ac-timeout=0
+sleep-inactive-battery-timeout=0
 [settings-daemon/plugins/media-keys]
 custom-keybindings=['/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']
 [settings-daemon/plugins/media-keys/custom-keybindings/custom0]
