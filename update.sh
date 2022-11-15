@@ -45,13 +45,27 @@ apt install -y firmware-ath9k-htc firmware-atheros firmware-b43-installer firmwa
 apt install -y gparted lshw iperf3 avahi-daemon \
     gnome-core nano bash-completion git htop squashfs-tools net-tools curl wget \
     live-boot sudo systemd-timesyncd alsa-utils pulseaudio grub2 grub-pc \
-    grub-efi-amd64-signed testdisk iotop
+    grub-efi-amd64-signed testdisk iotop cryptsetup libfuse-dev ntfs-3g-dev \
+    make automake autoconf libtool pkg-config openssh-server
 
 apt autoremove
 apt autoclean
 
 if [ -e /usr/sbin/update-initramfs.orig.initramfs-tools ]; then
   ln -sf /usr/sbin/update-initramfs.orig.initramfs-tools /usr/sbin/update-initramfs
+fi
+
+# Build ntfs-3g-system-compression
+echo "checking /root"
+if [ ! -d "/root/ntfs-3g-system-compression" ]; then
+  cd /root/
+  git clone https://github.com/ebiggers/ntfs-3g-system-compression.git
+  cd ntfs-3g-system-compression
+  autoreconf -i
+  ./configure
+  make install -j$nproc
+  ln -s /usr/local/lib/ntfs-3g /usr/lib/x86_64-linux-gnu/ntfs-3g
+  cd /
 fi
 
 update-initramfs -ck $(ls -v /lib/modules | tail -n 1)
