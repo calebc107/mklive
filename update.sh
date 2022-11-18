@@ -92,8 +92,10 @@ umount \$(df \$path | tail -n 1 | tr -s ' ' | cut -d ' ' -f 6)
 END
 
 read -p "Type username: " user
-adduser $user || true
+read -s -p "Password: " password
+adduser $user --disabled-password || true
 adduser $user sudo
+echo "$user:$password"| chpasswd
 
 #set various gnome settings
 sudo -u $user dbus-launch dconf load /org/gnome/ << END
