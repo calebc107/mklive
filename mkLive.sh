@@ -5,10 +5,6 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 apt install debootstrap squashfs-tools
-umount ./live/dev -l || true #unsure why -l works
-umount ./live/proc || true
-umount ./live/sys || true
-umount ./live/mnt || true
 mkdir -p output
 if [ ! -d ./live ]; then
 debootstrap bullseye ./live/
@@ -23,15 +19,8 @@ fi
 
 cp update.sh ./live/
 chmod +x ./live/update.sh
-mount --bind /dev ./live/dev
-mount --bind /proc ./live/proc
-mount --bind /sys ./live/sys
-mount --bind ./output ./live/mnt
-chroot ./live/ /update.sh
-umount -l ./live/dev
-umount ./live/proc
-umount ./live/sys
-umount ./live/mnt
+systemd-nspawn -D ./live /update.sh #chroot ./live/ /update.sh
+mv live/mnt/* output/
 chmod 755 ./output/*
 echo "
 Live system initialized.
