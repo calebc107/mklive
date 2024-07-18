@@ -7,7 +7,7 @@ fi
 cd $(dirname $0)
 DEV=$1
 PART=$DEV
-if [[ $DEV = *[0-9] ]];PART="${PART}p";fi
+if [[ $DEV = *[0-9] ]];then PART="${PART}p";fi
 PART="${PART}1"
 read -p "Installing to $DEV. Press enter to continue."
 apt install grub-efi-amd64-signed grub-pc
