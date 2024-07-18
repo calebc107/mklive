@@ -4,8 +4,8 @@ if [ "$EUID" -ne 0 ]; then
   sudo $0 $@
   exit
 fi
-
-if [ "$(mount | grep ' / ')" = "" ]
+echo $(losetup | grep /dev/loop0)
+if [ "$(losetup | grep /dev/loop0)" = "" ]
 then 
   IS_CHROOT=true
   path=/mnt
