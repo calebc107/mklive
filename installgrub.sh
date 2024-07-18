@@ -14,7 +14,7 @@ apt install grub-efi-amd64-signed grub-pc
 mkdir -p mnt
 mount $PART ./mnt
 grub-install --boot-directory ./mnt/boot --target i386-pc $DEV
-grub-install --removable --boot-directory ./mnt/boot --target x86_64-efi --uefi-secure-boot --disable-shim-lock --efi-directory ./mnt --no-nvram $DEV 
+grub-install --removable --boot-directory ./mnt/boot --target x86_64-efi --uefi-secure-boot --disable-shim-lock --force --skip-fs-probe --efi-directory ./mnt --no-nvram $DEV 
 cp memtestx*.bin shellx64.efi mnt/EFI/boot
 rm mnt/EFI/boot/fb*.efi
 
