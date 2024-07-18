@@ -46,7 +46,7 @@ apt install -y gparted lshw iperf3 avahi-daemon \
     gnome-core nano bash-completion git htop squashfs-tools net-tools curl wget \
     live-boot sudo systemd-timesyncd alsa-utils pulseaudio grub2 grub-pc \
     grub-efi-amd64-signed testdisk iotop cryptsetup libfuse-dev ntfs-3g-dev \
-    make automake autoconf libtool pkg-config openssh-server
+    make automake autoconf libtool pkg-config openssh-server screen
 
 apt autoremove
 apt autoclean
