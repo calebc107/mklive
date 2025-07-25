@@ -1,8 +1,7 @@
-#!/bin/bash
+#!/bin/bash -e
 # steps modified from Arch wiki at 
 # https://wiki.archlinux.org/title/Install_Arch_Linux_from_existing_Linux#Method_A:_Using_the_bootstrap_tarball_(recommended)
 # and https://wiki.archlinux.org/title/installation_guide
-set -e
 echo $(losetup | grep /dev/loop0)
 [[ "$@" = *"--chroot"* ]] && IS_CHROOT=true || IS_CHROOT=false
 echo running in chroot: $IS_CHROOT
