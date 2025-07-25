@@ -1,29 +1,31 @@
-#!/bin/bash
-read -p "Press Enter if script is running as ROOT"
-apt install debootstrap squashfs-tools
-rm -r live
-mkdir live
-tmp=$PWD/live
+#!/bin/bash -e
+if [ "$UID" != "0" ]; then
+  sudo $0 $@
+  exit $?
+fi
 
-debootstrap buster $tmp
+tmp=$PWD/virtos
+
+
+if [ ! -d $tmp ]; then
+  mkdir -p $tmp
+  debootstrap bookworm $tmp
+fi
+
 cat << END > $tmp/etc/apt/sources.list
-deb http://deb.debian.org/debian/ buster main contrib non-free
-deb http://deb.debian.org/debian/ buster-updates main contrib non-free
-deb http://deb.debian.org/debian buster-backports main contrib non-free
-deb http://security.debian.org/ buster/updates main contrib non-free
+deb https://deb.debian.org/debian bookworm main non-free-firmware
+deb https://security.debian.org/debian-security bookworm-security main non-free-firmware
+deb https://deb.debian.org/debian bookworm-updates main non-free-firmware
 END
+
 #run in chroot
-cat << END > $tmp/chroot.sh
+chroot $tmp bash -x << END
 #!/bin/bash
 apt update
-apt install qemu-kvm xterm xorg live-boot nano bash-completion alsa-utils pulseaudio
-apt install -t buster-backports linux-image-amd64 firmware-misc-nonfree firmware-iwlwifi network-manager
-
+apt install -y linux-image-amd64 pipewire qemu-system-x86
 passwd -d root
 systemctl disable hwclock.sh
 END
-chmod +x $tmp/chroot.sh
-chroot $tmp /chroot.sh
 
 #script for service
 cat << END > $tmp/VMHost.sh
@@ -50,9 +52,6 @@ LOCAL">$tmp/etc/adjtime
 if ! grep VMHost.sh $tmp/etc/crontab ; then
   echo "@reboot root /VMHost.sh" >> $tmp/etc/crontab
 fi
-
-#revert update-initramfs to normal
-mv $tmp/usr/sbin/update-initramfs.* $tmp/usr/sbin/update-initramfs
 
 #create squashfs for live filesytem
 mksquashfs $tmp filesystem.squashfs -noappend -wildcards -e 'dev/*' 'media/*' 'mnt/*' 'proc/*' 'lib/live/mount/*' 'run/*' 'sys/*' 'tmp/*'
