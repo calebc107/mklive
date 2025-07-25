@@ -2,3 +2,4 @@ filesystem.squashfs
 initrd.img
 vmlinuz
 live/
+arch_chroot/
