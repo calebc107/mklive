@@ -53,13 +53,31 @@ menuentry "Debian 12 64-bit"{
 	initrd /Debian/initrd.img
 }
 
-menuentry "Memtest86+ 64 bit"{
-    linux /EFI/boot/memtestx64.bin
+menuentry "Arch 64-bit"{
+        linux /arch/vmlinuz-linux live.diskuuid=B894-DB7A live.squashfspath=arch/filesystem.esquashfs
+        initrd /arch/initramfs-linux.img
 }
-
-menuentry "Memtest86+ 32 bit"{
-    linux /EFI/boot/memtestx32.bin
+if [ cpuid -l ]; then # 64 bit
+        if [ $grub_platform = efi ]; then
+                menuentry "Memtest86+ 64 bit (EFI)"{
+                linux /tools/memtest64.efi
+                }
+        else
+                menuentry "Memtest86+ 64 bit (BIOS)"{
+                linux /tools/memtest64.bin
 }
+        fi
+else
+        if [ $grub_platform = efi ]; then
+                menuentry "Memtest86+ 32 bit (EFI)"{
+                linux /tools/memtest32.efi
+                }
+        else
+                menuentry "Memtest86+ 32 bit (BIOS)"{
+                linux /tools/memtest32.bin
+}
+        fi
+fi
 
 if [ $grub_platform = efi ]; then
 	menuentry "MOKManager"{
