@@ -81,9 +81,10 @@ pacman -S  --noconfirm --needed base linux-firmware gparted lshw iperf3 avahi \
     xf86-video-vesa xf86-video-ati xf86-video-intel xf86-video-amdgpu \
     xf86-video-nouveau xf86-video-fbdev amd-ucode intel-ucode \
     networkmanager dosfstools e2fsprogs plasma-desktop sddm sddm-kcm \
-    firefox konsole gnome-disk-utility breeze-gtk dolphin rsync
+    firefox konsole gnome-disk-utility breeze-gtk dolphin rsync plasma-meta \
+    less
 
-systemctl enable NetworkManager sddm
+systemctl enable NetworkManager sddm sshd
 systemctl set-default graphical
 
 #promt user for new username
