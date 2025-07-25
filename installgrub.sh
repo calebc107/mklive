@@ -18,11 +18,11 @@ grub-install --removable --boot-directory ./mnt/boot --target x86_64-efi --uefi-
 cp memtestx*.bin shellx64.efi mnt/EFI/boot
 rm mnt/EFI/boot/fb*.efi
 
-cat << END > mnt/boot/grub/grub.cfg
+cat << 'END' > mnt/boot/grub/grub.cfg
 set check_signatures=no
 set gfxmode=auto
 insmod all_video
-if [ \$grub_platform = efi ]; then
+if [ $grub_platform = efi ]; then
 	insmod efi_gop
 	insmod efi_uga
 else
@@ -38,8 +38,9 @@ terminal_output gfxterm
 set default=1
 set timeout=20
 
+probe -u $root --set=rootuuid
 
-menuentry "Platform: \$grub_platform" {
+menuentry "Platform: $grub_platform" {
 	echo
 }
 
@@ -60,7 +61,7 @@ menuentry "Memtest86+ 32 bit"{
     linux /EFI/boot/memtestx32.bin
 }
 
-if [ \$grub_platform = efi ]; then
+if [ $grub_platform = efi ]; then
 	menuentry "MOKManager"{
 		chainloader /EFI/boot/mmx64.efi
 	}
