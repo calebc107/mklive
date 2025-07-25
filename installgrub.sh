@@ -58,25 +58,25 @@ menuentry "Arch 64-bit"{
         initrd /arch/initramfs-linux.img
 }
 if [ cpuid -l ]; then # 64 bit
-        if [ $grub_platform = efi ]; then
-                menuentry "Memtest86+ 64 bit (EFI)"{
-                linux /tools/memtest64.efi
-                }
-        else
-                menuentry "Memtest86+ 64 bit (BIOS)"{
-                linux /tools/memtest64.bin
-}
-        fi
+	if [ $grub_platform = efi ]; then
+		menuentry "Memtest86+ 64 bit (EFI)"{
+			linux /tools/memtest64.efi
+		}
+	else
+		menuentry "Memtest86+ 64 bit (BIOS)"{
+			linux /tools/memtest64.bin
+		}
+	fi
 else
-        if [ $grub_platform = efi ]; then
-                menuentry "Memtest86+ 32 bit (EFI)"{
-                linux /tools/memtest32.efi
-                }
-        else
-                menuentry "Memtest86+ 32 bit (BIOS)"{
-                linux /tools/memtest32.bin
-}
-        fi
+	if [ $grub_platform = efi ]; then
+		menuentry "Memtest86+ 32 bit (EFI)"{
+			linux /tools/memtest32.efi
+		}
+	else
+		menuentry "Memtest86+ 32 bit (BIOS)"{
+			linux /tools/memtest32.bin
+		}
+	fi
 fi
 
 if [ $grub_platform = efi ]; then
