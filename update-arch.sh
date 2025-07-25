@@ -12,7 +12,7 @@ sed -i -e 's/.*ParallelDownloads =.*/ParallelDownloads = 5/g' /etc/pacman.conf
 pacman-key --init
 pacman-key --populate
 pacman -Sy
-pacman -S --noconfirm --needed mkinitcpio
+pacman -S --noconfirm --needed mkinitcpio linux
 
 [ ! -e /etc/mkinitcpio.d/linux.preset.default ] && cp /etc/mkinitcpio.d/linux.preset /etc/mkinitcpio.d/linux.preset.default
 cat << END > /etc/mkinitcpio.d/linux.preset
@@ -74,7 +74,7 @@ END
 chmod +x /bin/live-toram
 
 pacman -Syu --noconfirm --needed
-pacman -S  --noconfirm --needed base linux linux-firmware gparted lshw iperf3 avahi \
+pacman -S  --noconfirm --needed base linux-firmware gparted lshw iperf3 avahi \
     nano bash-completion git htop squashfs-tools net-tools curl wget \
     sudo grub testdisk iotop fuse ntfs-3g \
     make automake autoconf libtool pkg-config openssh screen \
