@@ -125,6 +125,8 @@ $IS_CHROOT || mount -f -o remount,ro /
 
 #create encrypted squashfs
 size=$(du -sxB1 /|cut -f1) #measure unencrypted size
+size=$(( $size < 4 * 2 ** 30 ? $size : 4 * 2 ** 30 - 1 ))
+echo size: $size
 cryptsetup close newroot ||true #close the encrypted device if its open for some reason
 rm -f $path/filesystem.esquashfs.new #delete backing file if it exists
 fallocate -l $size $path/filesystem.esquashfs.new #allocate backing file. TODO: this will cause problems if the uncompressed root size is >4GB. this will cause problems on FAT filesystems, which this likely will be, since its an efi partition
