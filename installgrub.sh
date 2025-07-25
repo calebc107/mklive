@@ -48,7 +48,7 @@ menuentry "Continue Startup" {
 	exit
 }
 
-menuentry "Debian 11 64-bit"{
+menuentry "Debian 12 64-bit"{
 	linux /Debian/vmlinuz boot=live live-media-path=/Debian ignore_uuid
 	initrd /Debian/initrd.img
 }
