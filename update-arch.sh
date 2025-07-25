@@ -56,7 +56,7 @@ run_hook(){
 }
 END
 
-cat << END > /bin/live-toram
+cat << 'END' > /bin/live-toram
 #!/bin/bash
 path=\$(losetup | grep /dev/loop0 | tr -s ' ' | cut -d ' ' -f 6)
 echo Copying \$path to memory.
@@ -69,7 +69,7 @@ fcntl.ioctl(loop,0x4C06,dest.fileno())
 loop.close()
 dest.close()
 EOF
-umount \$(df \$path | tail -n 1 | tr -s ' ' | cut -d ' ' -f 6)
+umount $(df $path | tail -n 1 | tr -s ' ' | cut -d ' ' -f 6)
 END
 chmod +x /bin/live-toram
 
