@@ -102,13 +102,19 @@ ldconfig -X
 #promt user for new username
 read -p "Type username: " user
 useradd -m $user -G wheel && passwd $user && sudo -u $user bash -ex << END
-kwriteconfig --file kdeglobals --group KDE --key LookAndFeelPackage org.kde.breezedark.desktop
+kwriteconfig6 --file kdeglobals --group KDE --key LookAndFeelPackage org.kde.breezedark.desktop
 kwriteconfig6 --file kcminputrc --group Keyboard --key NumLock 0 
 kwriteconfig6 --file ksplashrc --group Ksplash --key Theme org.kde.breeze.desktop 
 kwriteconfig6 --file ksmserverrc --group General --key confirmLogout False
 kwriteconfig6 --file PlasmaDiscoverUpdates --group Global --key UseUnattendedUpdates false 
 kwriteconfig6 --file powerdevilrc --group Battery --group SuspendAndShutdown --key AutoSuspendAction 0 
 kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key AutoSuspendAction 0 
+END
+
+cat << END > /etc/sddm.conf.d/kde_settings.conf
+[Theme]
+Current=breeze
+CursorTheme=breeze_cursors
 END
 #TODO: clock seconds and tap-to-click touchpad
 
