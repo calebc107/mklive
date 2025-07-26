@@ -2,6 +2,12 @@
 # steps modified from Arch wiki at 
 # https://wiki.archlinux.org/title/Install_Arch_Linux_from_existing_Linux#Method_A:_Using_the_bootstrap_tarball_(recommended)
 # and https://wiki.archlinux.org/title/installation_guide
+
+if [ ! "$UID" == "0" ]; then
+    sudo $0 $@
+    exit $?
+fi
+
 echo $(losetup | grep /dev/loop0)
 [[ "$@" = *"--chroot"* ]] && IS_CHROOT=true || IS_CHROOT=false
 echo running in chroot: $IS_CHROOT
@@ -57,7 +63,11 @@ run_hook(){
 END
 
 cat << 'END' > /bin/live-toram
-#!/bin/bash
+#!/bin/bash -e
+if [ ! "$UID" == "0" ]; then
+    sudo $0 $@
+    exit $?
+fi
 path=\$(losetup | grep /dev/loop0 | tr -s ' ' | cut -d ' ' -f 6)
 echo Copying \$path to memory.
 rsync -a --progress \$path /run/live/filesystem
