@@ -30,11 +30,11 @@ END
     cd ..
 fi
 
-cp update-arch.sh ./arch_chroot
-chmod +x ./arch_chroot/update-arch.sh
+cp update-arch.sh ./arch_chroot/usr/bin/live-update
+chmod +x ./arch_chroot/usr/bin/live-update
 umount arch_chroot || true
 mount --bind arch_chroot arch_chroot
-./arch_chroot/bin/arch-chroot arch_chroot /update-arch.sh --chroot #run update script inside chroot
+./arch_chroot/bin/arch-chroot arch_chroot /usr/bin/live-update --chroot #run update script inside chroot
 mount | grep $PWD | cut -d' ' -f 3 | xargs umount -l || true #unmount everything related to this directory
 
 mkdir -p  output_arch
