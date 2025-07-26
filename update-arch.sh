@@ -101,20 +101,18 @@ ldconfig -X
 
 #promt user for new username
 read -p "Type username: " user
-useradd -m $user -G wheel && ( #add user and configure if they dont already exist
-    passwd $user
-    sudo -u $user lookandfeeltool -a org.kde.breezedark.desktop -platform offscreen
-    sudo -u $user kwriteconfig6 --file kcminputrc --group Keyboard --key NumLock 0 
-    sudo -u $user kwriteconfig6 --file ksplashrc --group Ksplash --key Theme org.kde.breeze.desktop 
-    sudo -u $user kwriteconfig6 --file PlasmaDiscoverUpdates --group Global --key UseUnattendedUpdates false 
-    sudo -u $user kwriteconfig6 --file powerdevilrc --group Battery --group SuspendAndShutdown --key AutoSuspendAction 0 
-    sudo -u $user kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key AutoSuspendAction 0 
-    kwriteconfig6 --file /etc/sddm.conf.d/kde_settings.conf --group Theme --key Current breeze 
-    kwriteconfig6 --file /etc/sddm.conf.d/kde_settings.conf --group Theme --key CursorTheme breeze_cursors 
-) || true
+useradd -m $user -G wheel && passwd $user && sudo -u $user bash -ex << END
+kwriteconfig --file kdeglobals --group KDE --key LookAndFeelPackage org.kde.breezedark.desktop
+kwriteconfig6 --file kcminputrc --group Keyboard --key NumLock 0 
+kwriteconfig6 --file ksplashrc --group Ksplash --key Theme org.kde.breeze.desktop 
+kwriteconfig6 --file ksmserverrc --group General --key confirmLogout False
+kwriteconfig6 --file PlasmaDiscoverUpdates --group Global --key UseUnattendedUpdates false 
+kwriteconfig6 --file powerdevilrc --group Battery --group SuspendAndShutdown --key AutoSuspendAction 0 
+kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key AutoSuspendAction 0 
+END
 #TODO: clock seconds and tap-to-click touchpad
 
-#add whel group to sudo and disable warning
+#add wheel group to sudo and disable warning
 cat << END > /etc/sudoers.d/privacy 
 Defaults        lecture = never #Dont nag me
 %wheel ALL=(ALL:ALL) ALL
