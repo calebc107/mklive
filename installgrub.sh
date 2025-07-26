@@ -1,22 +1,38 @@
-#!/bin/bash
+#!/bin/bash -e
+SCRIPT_DIR=$(realpath $(dirname $0))
+cd $SCRIPT_DIR
+
+[ -d grub-src ] || git clone https://git.savannah.gnu.org/git/grub.git grub-src
+[ -f memtest64.bin ] || curl https://www.memtest.org/download/v7.20/mt86plus_7.20.binaries.zip | bsdtar -xvf -
+
+cd grub-src
+[ -f unifont-16.0.04.pcf ] || curl https://mirrors.kernel.org/gnu/unifont/unifont-16.0.04/unifont-16.0.04.pcf.gz | zcat > unifont-16.0.04.pcf
+[ -d dejavu-fonts-ttf* ] || curl -L http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2 | tar -xj
+[ -f configure ]||./bootstrap
+[ -f Makefile ]|| ./configure --with-unifont=unifont-16.0.04.pcf --with-dejavufont=dejavu-fonts-ttf-2.37/ttf/DejaVuSans.ttf
+[ -f grub-install ]|| make -j16
+
+
+cd $SCRIPT_DIR
 
 if [ $(id -u) -ne 0 ]; then
     sudo $0 $@
     exit
 fi
-cd $(dirname $0)
+
 DEV=$1
 PART=$DEV
 if [[ $DEV = *[0-9] ]];then PART="${PART}p";fi
 PART="${PART}1"
-read -p "Installing to $DEV. Press enter to continue."
-apt install grub-efi-amd64-signed grub-pc
+read -p "Installing to $DEV, and partition $PART. Press enter to continue."
+
 mkdir -p mnt
+umount mnt || true
 mount $PART ./mnt
-grub-install --boot-directory ./mnt/boot --target i386-pc $DEV
-grub-install --removable --boot-directory ./mnt/boot --target x86_64-efi --uefi-secure-boot --disable-shim-lock --force --skip-fs-probe --efi-directory ./mnt --no-nvram $DEV 
-cp memtestx*.bin shellx64.efi mnt/EFI/boot
-rm mnt/EFI/boot/fb*.efi
+mkdir -p mnt/tools
+./grub-src/grub-install -d ./grub-src/grub-core --boot-directory ./mnt/boot --target i386-pc $DEV
+./grub-src/grub-install -d ./grub-src/grub-core --removable --boot-directory ./mnt/boot --target x86_64-efi --disable-shim-lock --force --skip-fs-probe --efi-directory ./mnt --no-nvram $DEV 
+cp memtest*.* shellx64.efi mnt/tools
 
 cat << 'END' > mnt/boot/grub/grub.cfg
 set check_signatures=no
