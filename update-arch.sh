@@ -96,6 +96,8 @@ pacman -S  --noconfirm --needed base linux-firmware gparted lshw iperf3 avahi \
 
 systemctl enable NetworkManager sddm sshd
 systemctl set-default graphical
+systemctl mask ldconfig
+ldconfig -X
 
 #promt user for new username
 read -p "Type username: " user
