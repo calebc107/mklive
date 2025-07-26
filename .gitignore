@@ -3,3 +3,4 @@ initrd.img
 vmlinuz
 live/
 arch_chroot/
+mnt/
