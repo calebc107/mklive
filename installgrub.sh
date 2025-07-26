@@ -54,7 +54,7 @@ menuentry "Debian 12 64-bit"{
 }
 
 menuentry "Arch 64-bit"{
-        linux /arch/vmlinuz-linux live.diskuuid=B894-DB7A live.squashfspath=arch/filesystem.esquashfs
+        linux /arch/vmlinuz-linux live.diskuuid=$rootuuid live.squashfspath=arch/filesystem.esquashfs
         initrd /arch/initramfs-linux.img
 }
 if [ cpuid -l ]; then # 64 bit
