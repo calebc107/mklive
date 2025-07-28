@@ -68,9 +68,9 @@ if [ ! "$UID" == "0" ]; then
     sudo $0 $@
     exit $?
 fi
-path=\$(losetup | grep /dev/loop0 | tr -s ' ' | cut -d ' ' -f 6)
-echo Copying \$path to memory.
-rsync -a --progress \$path /run/live/filesystem
+path=$(losetup | grep /dev/loop0 | tr -s ' ' | cut -d ' ' -f 6)
+echo Copying $path to memory.
+rsync -a --progress $path /run/live/filesystem
 python3 << EOF
 import fcntl
 loop = open('/dev/loop0')
@@ -111,6 +111,7 @@ kwriteconfig6 --file powerdevilrc --group Battery --group SuspendAndShutdown --k
 kwriteconfig6 --file powerdevilrc --group AC --group SuspendAndShutdown --key AutoSuspendAction 0 
 END
 
+mkdir -p /etc/sddm.conf.d/
 cat << END > /etc/sddm.conf.d/kde_settings.conf
 [Theme]
 Current=breeze
