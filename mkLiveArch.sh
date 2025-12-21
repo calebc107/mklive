@@ -1,9 +1,8 @@
-#!/bin/bash
+#!/bin/bash -e
 # steps modified from Arch wiki at 
 # https://wiki.archlinux.org/title/Install_Arch_Linux_from_existing_Linux#Method_A:_Using_the_bootstrap_tarball_(recommended)
 # and https://wiki.archlinux.org/title/installation_guide
 
-set -e
 if [ "$EUID" -ne 0 ]; then
   sudo $0 $@
   exit
@@ -32,18 +31,16 @@ fi
 
 cp update-arch.sh ./arch_chroot/usr/bin/live-update
 chmod +x ./arch_chroot/usr/bin/live-update
-umount arch_chroot || true
 mount --bind arch_chroot arch_chroot
 ./arch_chroot/bin/arch-chroot arch_chroot /usr/bin/live-update --chroot #run update script inside chroot
 mount | grep $PWD | cut -d' ' -f 3 | xargs umount -l || true #unmount everything related to this directory
 
-mkdir -p  output_arch
-mv arch_chroot/vmlinuz-linux output_arch/vmlinuz-linux
-mv arch_chroot/initramfs-linux.img output_arch/initramfs-linux.img
-mv arch_chroot/filesystem.esquashfs output_arch/filesystem.esquashfs
-chmod 755 output_arch/* 
+mkdir -p arch
+mv arch_chroot/vmlinuz-linux arch_livevmlinuz-linux
+mv arch_chroot/initramfs-linux-live.img arch_liveinitramfs-linux-live.img
+mv arch_chroot/filesystem.esquashfs arch_livefilesystem.esquashfs
+chmod 755 arch_live*
 echo "
 Live system initialized.
 NEXT STEPS:
-	Copy new files from output_arch/ to removable media and ensure threre is a grub config for it"
-
+	Done! Copy arch_live directory to removable media"
