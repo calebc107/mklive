@@ -1,6 +1,4 @@
-filesystem.squashfs
-initrd.img
-vmlinuz
-live/
-arch_chroot/
-mnt/
+arch_live/
+debain_live/
+*.tar*
+*.img
