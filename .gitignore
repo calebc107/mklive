@@ -2,3 +2,5 @@ arch_live/
 debain_live/
 *.tar*
 *.img
+arch_chroot/
+grub_chroot/

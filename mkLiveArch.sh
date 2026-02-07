@@ -17,9 +17,7 @@ if [ ! -d arch_chroot ]; then #download bootstrap tar if needed
     fi
     mkdir arch_chroot
     cd arch_chroot
-    tar -xf ../archlinux-bootstrap-x86_64.tar.zst --numeric-owner
-    mv root.x86_64/* . 
-    rm -rf root.x86_64
+    tar -xf ../archlinux-bootstrap-x86_64.tar.zst --numeric-owner --strip-components=1
     read -p "Set hostname for arch: " newhostname
     echo $newhostname > ./etc/hostname
     cat << END > ./etc/hosts
@@ -35,11 +33,11 @@ mount --bind arch_chroot arch_chroot
 ./arch_chroot/bin/arch-chroot arch_chroot /usr/bin/live-update --chroot #run update script inside chroot
 mount | grep $PWD | cut -d' ' -f 3 | xargs umount -l || true #unmount everything related to this directory
 
-mkdir -p arch
-mv arch_chroot/vmlinuz-linux arch_livevmlinuz-linux
-mv arch_chroot/initramfs-linux-live.img arch_liveinitramfs-linux-live.img
-mv arch_chroot/filesystem.esquashfs arch_livefilesystem.esquashfs
-chmod 755 arch_live*
+mkdir -p arch_live
+mv arch_chroot/vmlinuz-linux arch_live/vmlinuz-linux
+mv arch_chroot/initramfs-linux-live.img arch_live/initramfs-linux-live.img
+mv arch_chroot/filesystem.esquashfs arch_live/filesystem.esquashfs
+chmod -R 755 arch_live
 echo "
 Live system initialized.
 NEXT STEPS:
