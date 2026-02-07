@@ -36,7 +36,7 @@ read -p "Installing to $DEV, and partition $PART. Press enter to continue."
 ./arch_chroot/bin/arch-chroot ./grub_chroot bash -lex << END
 apt update
 apt upgrade -y
-apt install -y busybox-static cpio curl grub-pc-bin grub-efi memtest86+ efi-shell-x64 efibootmgr linux-image-amd64 mokutil
+apt install -y busybox-static cpio xz-utils curl grub-pc-bin grub-efi memtest86+ efi-shell-x64 efibootmgr linux-image-amd64 mokutil
 mkdir -p /efi
 mount $PART /efi
 grub-install --target x86_64-efi --boot-directory /efi/boot --removable --force --skip-fs-probe --efi-directory /efi --no-nvram $DEV
@@ -45,6 +45,7 @@ mkdir -p efi/tools efi/debian
 cp /boot/memtest86+* /usr/share/efi-shell-x64/shellx64.efi efi/tools
 
 for arch in amd64 arm64 armhf i386 loong64 ppc64el riscv64 s390x; do
+	[ -f efi/tools/busybox.\$arch ] && continue
 	curl "http://ftp.debian.org/debian/pool/main/b/busybox/busybox-static_1.37.0-10_\$arch.deb" | \
 	dpkg --fsys-tarfile /dev/stdin | \
 	tar xO ./usr/bin/busybox > efi/tools/busybox.\$arch
@@ -54,20 +55,9 @@ done
 cp -L /vmlinuz efi/debian/vmlinuz #copy kernel
 rm -rf busybox_initramfs
 mkdir -p busybox_initramfs
+uname=\$(echo /lib/modules/*/modules.dep|cut -d/ -f4)
 cd busybox_initramfs
-cat << 'EOF' > init
-#!/bin/busybox sh
-/bin/busybox --install -s /bin
-insmod /lib/modules/efivarfs.ko
-mount -t devtmpfs devtmpfs /dev
-mount -t proc proc /proc
-mount -t sysfs sysfs /sys
-mount -t efivarfs efivarfs /sys/firmware/efi/efivars
-exec /bin/sh
-EOF
-chmod +x init
-mkdir -p proc sys dev bin etc lib/modules lib64
-cp /bin/busybox bin/busybox
+mkdir -p bin dev etc lib lib64 proc sys
 cat << EOF | xargs -i cp -L --parents {} ./
 /lib/x86_64-linux-gnu/libcrypto.so.3
 /lib/x86_64-linux-gnu/libefivar.so.1
@@ -77,10 +67,27 @@ cat << EOF | xargs -i cp -L --parents {} ./
 /lib/x86_64-linux-gnu/libz.so.1
 /lib/x86_64-linux-gnu/libzstd.so.1
 /lib64/ld-linux-x86-64.so.2
-/usr/bin/mokutil
+/bin/mokutil
+/bin/busybox
 EOF
-xzcat /lib/modules/*/kernel/fs/efivarfs/efivarfs.ko.xz > lib/modules/efivarfs.ko
-xzcat /lib/modules/*/kernel/drivers/hid/usbhid/usbhid.ko.xz > lib/modules/usbhid.ko
+
+MODULES="efivarfs evdev usbhid hid-generic xhci-hcd ehci-hcd uhci-hcd ohci-hcd xhci-pci ehci-pci uhci-pci ohci-pci"
+echo \$MODULES|xargs modprobe -aS \$uname --show-depends |cut -d" " -f2 | xargs -i cp --parents {} ./
+depmod -ab . \$uname
+
+
+cat << EOF > init
+#!/bin/busybox sh
+/bin/busybox --install -s /bin
+modprobe -av \$MODULES
+mount -t devtmpfs devtmpfs /dev
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t efivarfs efivarfs /sys/firmware/efi/efivars
+/bin/sh
+poweroff -f
+EOF
+chmod +x init
 
 find . -print0 | cpio --null -ov --format=newc | gzip -9 > /efi/debian/busybox.img
 cd /
